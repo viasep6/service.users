@@ -10,7 +10,8 @@ on:
   workflow_dispatch:
 
 env:
-  AZURE_FUNCTIONAPP_PACKAGE_PATH: '.' # set this to the path to your web app project, defaults to the repository root
+  AZURE_FUNCTIONAPP_NAME: 'mowits-users'
+  AZURE_FUNCTIONAPP_PACKAGE_PATH: 'src' # set this to the path to your web app project, defaults to the repository root
   NODE_VERSION: '14.x' # set this to the node version to use (supports 8.x, 10.x, 12.x)
 
 jobs:
@@ -19,12 +20,9 @@ jobs:
     steps:
       - name: 'Checkout GitHub Action'
         uses: actions/checkout@v2
-
-      - name: Setup Node ${{ env.NODE_VERSION }} Environment
-        uses: actions/setup-node@v1
         with:
-          node-version: ${{ env.NODE_VERSION }}
-
+          token: ${{ secrets.CI_TOKEN }}
+          submodules: true
       - name: 'Resolve Project Dependencies Using Npm'
         shell: bash
         run: |
@@ -38,7 +36,7 @@ jobs:
         uses: Azure/functions-action@v1
         id: fa
         with:
-          app-name: 'mowits-users'
+          app-name: ${{ env.AZURE_FUNCTIONAPP_NAME }}
           slot-name: 'Production'
           package: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_8CF7A1A04E3E44CE880E360D9803FB01 }}
