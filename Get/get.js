@@ -41,7 +41,6 @@ exports.getUserProfile = (request, response) => {
         if (doc !== undefined && doc.exists) {
             doc = doc.data()
             delete doc.email
-            delete doc.idtoken
             return response.res.json(JSON.stringify(doc))
         }
         return response.res.status(404).json(JSON.stringify({ message: "User does not exists!" }));
