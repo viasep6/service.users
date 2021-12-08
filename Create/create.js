@@ -80,3 +80,19 @@ exports.createUser = (request, response) => {
         }
     });
 }
+
+
+/*
+    Change profile image for requesting user
+*/
+exports.changeProfileImage =  (request, response) => {
+    const imgUrl = request.body.imageUrl
+    
+    return db.doc('users/' + request.user.idtoken).update({profileImage: imgUrl}).then(async doc => {
+        const user = await db.doc('users/' + request.user.idtoken).get()
+        return response.res.status(201).json(JSON.stringify(user.data()));
+    }).catch((err) => {
+        console.log(err);
+        return response.res.status(500).json(JSON.stringify({ general: 'Something went wrong, please try again' }));
+    });
+}

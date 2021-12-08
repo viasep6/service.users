@@ -3,7 +3,7 @@ const { db } = require('../service.shared/Repository/Firebase/admin');
 
 
 /*
-    Get user
+    Get private user
     return user profile based on access token
 */
 exports.getUser = (request, response) => {
@@ -14,7 +14,6 @@ exports.getUser = (request, response) => {
 		.then((doc) => {
 			if (doc.exists) {
                 userData.userCredentials = doc.data();
-                delete userData.userCredentials.idtoken // do not send user id back
                 return response.res.json(userData);
 			} else {
                 return response.res.status(404).json(JSON.stringify({ message: "User does not exists!" }));
@@ -29,13 +28,16 @@ exports.getUser = (request, response) => {
 
 
 /*
-    Get user profile
+    Get public user profile
     returns public profile information if exists
 */
 exports.getUserProfile = (request, response) => {
     const displayName = request.query.user;
+    
     // to support lowercase lookup, another fields has to be created
-    return db.collection("users").where("displayName", "==", displayName).limit(1).get().then((data)=> {
+    
+
+    return db.collection("users").where("displayName", "==", displayName).limit(1).get().then(async (data)=> {
         let doc = data.docs[0]
 
         if (doc !== undefined && doc.exists) {
@@ -48,8 +50,5 @@ exports.getUserProfile = (request, response) => {
     }).catch((error) => {
         console.log(error);
         return response.res.status(500).json(JSON.stringify({ error: error.code }));
-    })
-
-
-    
+    })    
 }
