@@ -1,2 +1,2 @@
 # service.users
-Azure FunctionApp for mowits users
+Azure FunctionApp for mowits users.
